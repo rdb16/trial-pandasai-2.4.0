@@ -1,0 +1,9 @@
+{
+  "aws_user": "bedrock_user",
+  "aws_region": "eu-west-3",
+  "aws_model": "anthropic.claude-3-sonnet-20240229-v1:0",
+  "llm_max_tokens": 4000,
+  "llm_temperature": 0,
+  "export_path_charts": "./exports/png",
+  "export_path_pdf_reports": "./exports/pdf"
+}
