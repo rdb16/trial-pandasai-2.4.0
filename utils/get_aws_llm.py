@@ -1,6 +1,7 @@
 import boto3
 import streamlit
 from pandasai.llm import BedrockClaude
+from pandasai.schemas.df_config import Config
 
 
 @streamlit.cache_resource
@@ -15,4 +16,5 @@ def get_aws_llm(conf):
         max_tokens=conf['llm_max_tokens'],
         temperature=conf['llm_temperature']
     )
+
     return llm

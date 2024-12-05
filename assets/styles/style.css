@@ -21,6 +21,13 @@
 .stButton button[kind="primary"]:hover {
     background-color: darkblue !important;
 }
+.title {
+    text-align: center;              /* Centrer le texte */
+    background-color: #4F9493;       /* Fond bleu marine (code couleur hexadécimal) */
+    color: white;                    /* Couleur du texte en blanc */
+    font-size: 1.5em;                /* Taille moyenne pour le texte (ajustez selon vos besoins) */
+    padding: 20px;                   /* Ajouter un peu de marge intérieure pour améliorer l'apparence */
+}
 .footer {
             position: fixed;
             left: 0;

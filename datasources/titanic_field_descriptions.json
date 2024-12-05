@@ -1,0 +1,14 @@
+{
+    "PassengerId": "identifiant unique du passager",
+    "Survived": "booléen: 0 si le passager a péri, 1 si il a survécu",
+    "Pclass": "numéro de la classe du passager",
+    "Name": "le nom du passager",
+    "Sex": "le sexe du ou de la passagère",
+    "Age": "l'age du passager",
+    "SibSp": "le nombre de frères et soeurs ou conjoints accompagnant le passager",
+    "Parch": "le nombre de parents ou d'enfants accompagnant le passager",
+    "Ticket": "l'identifiant du billet",
+    "Fare": "le prix du billet",
+    "Cabin": "le numéro de cabine ou null si le passager n'en a pas",
+    "Embarked": "un lettre pour les ports d'embarquement possibles : S = Southampton, C = Cherbourg, Q = Queenstown, null si inconnu."
+}
