@@ -1,0 +1,9 @@
+{
+  "species": "Espèce du manchot observé, telle que 'Adelie'. Ce champ identifie le type de manchot dans l'étude.",
+  "island": "Nom de l'île où le manchot a été observé, par exemple 'Torgersen'. Cela aide à localiser l'habitat des manchots.",
+  "bill_length_mm": "Longueur du bec du manchot en millimètres. Cette mesure est importante pour étudier la morphologie des manchots.",
+  "bill_depth_mm": "Profondeur du bec du manchot en millimètres. Cela permet de mieux comprendre la variation de la forme du bec entre les espèces.",
+  "flipper_length_mm": "Longueur de la nageoire du manchot en millimètres. Cela donne des informations sur les capacités de nage et l'adaptation de l'espèce.",
+  "body_mass_g": "Masse corporelle du manchot en grammes. Ce champ est utilisé pour étudier la condition physique et la santé du manchot.",
+  "sex": "Sexe du manchot, soit 'MALE' (mâle) ou 'FEMALE' (femelle). Cela permet d'étudier les différences entre les sexes dans la population."
+}

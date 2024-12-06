@@ -1,0 +1,18 @@
+{
+    "Segment": "Représente le type de marché ou de client ciblé, tel que 'Government' (gouvernement) ou 'Midmarket' (marché intermédiaire). Il aide à catégoriser les ventes selon le segment de clientèle.",
+    "Country": "Indique le pays dans lequel les ventes ont été réalisées (par exemple, 'Canada', 'Germany', 'France'). Ce champ permet d’identifier la géographie des ventes.",
+    "Product": "Spécifie le produit vendu. Cela identifie le type de produit impliqué dans la transaction.",
+    "Discount Band": "Représente le niveau de réduction appliqué à la vente.",
+    "Units Sold": "Indique le nombre d'unités vendues. Ce chiffre est une mesure quantitative des ventes réalisées pour chaque ligne de transaction.",
+    "Manufacturing Price": "Prix de fabrication unitaire du produit. C'est le coût de production d'une unité du produit.",
+    "Sale Price": "Prix de vente unitaire du produit au client. Il reflète le montant que le client a payé par unité.",
+    "Gross Sales": "Le montant total des ventes brutes avant toute réduction, calculé en multipliant le nombre d'unités vendues par le prix de vente.",
+    "Discounts": "Montant des réductions appliquées aux ventes. Dans cet extrait, il n'y a pas de réduction (représenté par '$-').",
+    "Sales": "Chiffre d'affaires net après déduction des réductions. Cela représente le revenu réel obtenu des ventes après application des remises.",
+    "COGS": "Coût des marchandises vendues, qui correspond aux coûts associés à la production des biens vendus (par exemple, coûts de fabrication).",
+    "Profit": "Différence entre les ventes nettes et le coût des marchandises vendues (COGS). Il s'agit du bénéfice obtenu pour chaque transaction.",
+    "Date": "La date de la vente sous le format 'jour/mois/année' (par exemple, '01/01/2014').",
+    "Month Number": "Numéro du mois auquel la vente correspond (par exemple, '1' pour janvier).",
+    "Month Name": "Nom du mois de la vente (par exemple, 'January' pour janvier).",
+    "Year": "Année de la vente (par exemple, '2014')."
+  }

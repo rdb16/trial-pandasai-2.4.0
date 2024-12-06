@@ -1,6 +1,6 @@
 /* Styles pour le bouton "Envoyer" */
 .stButton button[kind="secondary"] {
-    background-color: blue !important;
+    background-color: darkgreen !important;
     color: white !important;
     border-radius: 6px !important;
     padding: 10px 20px !important;
@@ -8,10 +8,10 @@
     cursor: pointer !important;
 }
 .stButton button[kind="secondary"]:hover {
-    background-color: darkblue !important;
+    background-color: green !important;
 }
 .stButton button[kind="primary"] {
-    background-color: green !important;
+    background-color: darkred !important;
     color: white !important;
     border-radius: 8px !important;
     padding: 10px 20px !important;
@@ -19,7 +19,7 @@
     cursor: pointer !important;
 }
 .stButton button[kind="primary"]:hover {
-    background-color: darkblue !important;
+    background-color: red !important;
 }
 .title {
     text-align: center;              /* Centrer le texte */
@@ -27,6 +27,13 @@
     color: white;                    /* Couleur du texte en blanc */
     font-size: 1.5em;                /* Taille moyenne pour le texte (ajustez selon vos besoins) */
     padding: 20px;                   /* Ajouter un peu de marge intérieure pour améliorer l'apparence */
+}
+.analysis {
+    text-align: left;              /* Centrer le texte */
+    background-color: #4F9493;       /* Fond bleu marine (code couleur hexadécimal) */
+    color: white;                    /* Couleur du texte en blanc */
+    font-size: 1.0em;                /* Taille moyenne pour le texte (ajustez selon vos besoins) */
+    padding: 10px;
 }
 .footer {
             position: fixed;
