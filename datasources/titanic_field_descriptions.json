@@ -1,14 +1,15 @@
 {
-    "PassengerId": "identifiant unique du passager",
-    "Survived": "booléen: 0 si le passager a péri, 1 si il a survécu",
-    "Pclass": "numéro de la classe du passager",
-    "Name": "le nom du passager",
-    "Sex": "le sexe du ou de la passagère",
-    "Age": "l'age du passager",
-    "SibSp": "le nombre de frères et soeurs ou conjoints accompagnant le passager",
-    "Parch": "le nombre de parents ou d'enfants accompagnant le passager",
-    "Ticket": "l'identifiant du billet",
-    "Fare": "le prix du billet",
-    "Cabin": "le numéro de cabine ou null si le passager n'en a pas",
-    "Embarked": "un lettre pour les ports d'embarquement possibles : S = Southampton, C = Cherbourg, Q = Queenstown, null si inconnu."
+    "PassengerId": "unique passenger identifier",
+    "Survived": "Boolean: 0 if the passenger perished, 1 if the passenger survived",
+    "Pclass": "passenger class number",
+    "Name": "the passenger's name",
+    "Sex": "the sex of the passenger",
+    "Age": "the passenger's age",
+    "SibSp": "the number of brothers and sisters or spouses accompanying the passenger",
+    "Parch": "the number of parents or children accompanying the passenger",
+    "Ticket": "the ticket identifier",
+    "Fare": "the price of the ticket",
+    "Cabin": "the cabin number or null if the passenger does not have one",
+    "Embarked": "a letter for the possible embarkation ports S = Southampton, C = Cherbourg, Q = Queenstown, null if unknown"
 }
+

@@ -4,6 +4,10 @@
   "aws_model": "anthropic.claude-3-sonnet-20240229-v1:0",
   "llm_max_tokens": 4000,
   "llm_temperature": 0,
-  "export_path_charts": "./exports/png",
-  "export_path_pdf_reports": "./exports/pdf"
+  "chart_export_path": "./exports/png/my_chart.png",
+  "pdf_export_path": "./exports/pdf",
+  "pdf_page_format": "A4",
+  "pdf_page_orientation": "P",
+  "pdf_unit": "mm",
+  "logo_path": "./assets/logo/sntpk-ia-logo.jpeg"
 }

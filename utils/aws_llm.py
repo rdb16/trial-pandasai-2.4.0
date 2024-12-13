@@ -1,7 +1,6 @@
 import boto3
 import streamlit
 from pandasai.llm import BedrockClaude
-from pandasai.schemas.df_config import Config
 
 
 @streamlit.cache_resource

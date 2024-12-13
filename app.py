@@ -1,16 +1,21 @@
 import datetime
 import json
 import os
-
+import time
+import uuid
+from pathlib import Path
 import streamlit as st
-import pandas as pd
+import pandasai.pandas as pd
 from PIL import Image
-import boto3
+# import boto3
+from filelock import FileLock
 from pandasai import SmartDataframe
 from pandasai.schemas.df_config import Config
 from pandasai.connectors import PandasConnector
-from utils.pdf_utils import create_kai_pdf
-from utils.get_aws_llm import get_aws_llm
+from utils.pdf_utils import create_k_report_pdf
+# from utils.aws_llm import get_aws_llm
+
+from utils.bamboo_llm import get_bamboo_llm
 from utils.match_descriptions_file import find_matching_description_file
 
 
@@ -19,24 +24,37 @@ def clear_input():
     st.session_state.input_text = ""
     st.session_state.output_text = ""
     st.session_state.show_new_question_button = False
-    st.session_state.show_envoyer_button = True
+    st.session_state.show_send_button = True
 
 
-# Fonction pour traiter la question
-def handle_question(sdf1):
-    prompt1 = st.session_state.input_text.strip()
+def handle_query(sdf1, prompt1):
     if prompt1:
-        with st.spinner(text='En attente de la réponse !!'):
+        with st.spinner(text='Waiting for llm answer !!'):
             try:
                 response = sdf1.chat(prompt1)
             except Exception as e:
-                st.error(f"Erreur lors de l'appel au LLM : {e}")
-                response = "Une erreur est survenue. Veuillez réessayer"
+                st.error(f"Error when calling LLM : {e}")
+                response = "An Error occurred. Please retry"
 
-        st.session_state.output_text = response
-        st.session_state.session_data.append({"question": prompt1, "answer": response})
-        st.session_state.show_envoyer_button = False
+        if isinstance(response, str) and response.endswith(".png"):
+            default_chart_path = Path("exports/charts/temp_chart.png")
+            final_chart_rep = "./exports/png/"
+            if os.path.exists(default_chart_path):
+                unique_file_path = final_chart_rep + get_unique_filename()
+                default_chart_path.rename(Path(unique_file_path))
+                response = unique_file_path
+
+        st.session_state.output_text = str(response)
+        st.session_state.session_data.append({"question": prompt1, "answer": str(response)})
+        st.session_state.show_send_button = False
         st.session_state.show_new_question_button = True
+
+
+# Generate a unique file name using a timestamp or UUID
+def get_unique_filename(prefix="chart", extension=".png"):
+    timestamp1 = time.strftime("%Y%m%d-%H%M%S")  # Timestamp for uniqueness
+    unique_id = uuid.uuid4().hex[:8]  # Short UUID for uniqueness
+    return f"{prefix}_{timestamp1}_{unique_id}{extension}"
 
 
 # Configuration de la page
@@ -55,14 +73,14 @@ if 'description_file_name' not in st.session_state:
 if 'show_new_question_button' not in st.session_state:
     st.session_state.show_new_question_button = False
 
-if 'show_envoyer_button' not in st.session_state:
-    st.session_state.show_envoyer_button = True
+if 'show_send_button' not in st.session_state:
+    st.session_state.show_send_button = True
 
 if 'input_text' not in st.session_state:
     st.session_state.input_text = ""
 
 if 'output_text' not in st.session_state:
-    st.session_state.out_text = ""
+    st.session_state.output_text = ""
 
 if 'sdf' not in st.session_state:
     st.session_state.sdf = None
@@ -83,14 +101,14 @@ if 'session_data' not in st.session_state:
 # read configuration
 @st.cache_resource
 def read_conf():
-    with open('general_config.json', 'r') as f:
-        return json.load(f)
+    with open('general_config.json', 'r') as f_conf:
+        return json.load(f_conf)
 
 
 @st.cache_resource
 def get_css_style():
-    with open("assets/styles/style.css", "r") as f:
-        return f.read()
+    with open("assets/styles/style.css", "r") as f_css:
+        return f_css.read()
 
 
 @st.cache_resource
@@ -100,7 +118,8 @@ def get_logo():
 
 
 config = read_conf()
-llm = get_aws_llm(config)
+# llm = get_aws_llm(config)
+llm = get_bamboo_llm()
 if llm is None:
     st.warning("No AWS LLM detected")
 
@@ -108,7 +127,7 @@ st.markdown(f"<style>{get_css_style()}</style>", unsafe_allow_html=True)
 st.image(get_logo(), width=100, caption=None)
 st.markdown("""
     <div class="title">
-        Streamlit for PandasAI <br> on AWS Bedrock Claude 3.0 
+        Usage Report <br>Streamlit for PandasAI <br> on AWS Bedrock Claude 3.0 <br>  or Bamboo_LLM
     </div>
     <div class="footer">
         &copy; 2024-2025 SNTP Capitalisation. Tous droits réservés.
@@ -132,11 +151,14 @@ if st.session_state.sdf is None:
         else:
             st.error("Unsupported file type")
 
+        st.session_state.data = data
+
         sdf_cfg = Config(
             llm=llm,
             model=config['aws_model'],
             max_tokens=config['llm_max_tokens'],
-            temperature=config['llm_temperature']
+            temperature=config['llm_temperature'],
+            save_charts_path=config['chart_export_path']
         )
         if sdf_cfg is None:
             st.warning("No AWS LLM detected")
@@ -158,21 +180,19 @@ if st.session_state.sdf is None:
             sdf = SmartDataframe(data, config=sdf_cfg)
 
         st.session_state.sdf = sdf
-        nb_ln, nb_c = data.shape
-        st.session_state.nb_ln = nb_ln
-        st.session_state.nb_c = nb_c
-        st.session_state.column_names = list(data.columns)
 
 # affichage des infos sur le datasae
-if st.session_state.sdf is not None:
+if 'sdf' in st.session_state and st.session_state.sdf is not None:
+    nb_ln, nb_c = st.session_state.data.shape
+    col_list = list(st.session_state.data.columns)
     st.markdown(f"""<hr />
     <div class="analysis">
     Analysis for dataset : {st.session_state.selected_dataset_name}  on {st.session_state.study_date}
     </div>
     <br />   
-    <h5>Dataset Shape :  </h5>lines : {st.session_state.nb_ln}, columns : {st.session_state.nb_c}
+    <h5>Dataset Shape :  </h5>lines : {nb_ln}, columns : {nb_c}
     <hr />
-    <h5>Field names :  </h5>lines : " {', '.join(st.session_state.column_names)}"
+    <h5>Field names :  </h5>:  {col_list}
     <hr />
     """, unsafe_allow_html=True)
 
@@ -185,31 +205,37 @@ if st.session_state.sdf is not None:
                <br>Now for this dataset, Enter your question in natural language  :<br> 
                </h4>
            """, unsafe_allow_html=True)
-    st.text_area("Enter your prompt here and send it", value=st.session_state.input_text,
-                 key="input_text")
+    st.text_area("Enter your prompt here and send it", value=st.session_state.input_text, key="input_text")
     # Utilisation de st.empty() pour créer un espace réservé pour la réponse
     response_placeholder = st.empty()
 
-
-    if not st.session_state.show_envoyer_button:
-        answer = str(st.session_state.output_text)
-        # print(answer)
-        if answer.endswith(".png"):
-            answer = f"Tour chart was created at\n{st.session_state.output_text}"
-        response_placeholder.text_area("Response", value=answer, key="output_text_area", disabled=True)
+    if st.session_state and not st.session_state.show_send_button:
+        answer = st.session_state.output_text
+        response_placeholder.text_area("Response : ", value=str(answer) if answer is not None else "", key="output_text", disabled=True)
 
     # affichage des boutons das une ligne
     col1, col2 = st.columns([2, 1])
 
     with col1:
-        # Bouton envoyer
-        if st.session_state.show_envoyer_button:
-            st.button("Send", key="envoyer", help="Send the query to the server", on_click=handle_question, args=(st.session_state.sdf,))
+        # Bouton send
+        if st.session_state.show_send_button:
+            prompt  = st.session_state.input_text.strip() if st.session_state.input_text is not None else ""
+            st.button("Send", key="send", help="Send the query to the server", on_click=handle_query, args=(st.session_state.sdf, prompt,))
 
     with col2:
         # Bouton Nouvelle question (visible seulement après la réponse)
         if st.session_state.show_new_question_button:
-            st.button("New query", key="new_query", help="Last query and answer will be registrate. Ask an other question",
-                      use_container_width=True, on_click=clear_input)
+            st.button("New query", key="new_query", help="Last query and answer will be registrate. Ask an other question", use_container_width=True, on_click=clear_input)
 
+    # Bouton Archiver pour générer un PDF
+    if st.button("Stop & Archive", key="archive", help="save to PDF", use_container_width=True, kwargs={"kind": "primary"}):
+        # debug
+        with open('debug.txt', 'a') as f:
+            for item in st.session_state.session_data:
+                f.write(f'\n{item}')
 
+        csv_name = os.path.basename(st.session_state.selected_dataset_name)
+        pdf_path = create_k_report_pdf(config, csv_name, st.session_state.session_data, st.session_state.data)
+
+        st.success(f"PDF généré avec succès : {pdf_path}")
+        st.write(f"[Télécharger le PDF]({pdf_path})")
